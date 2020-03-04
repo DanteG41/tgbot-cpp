@@ -479,7 +479,7 @@ Message::Ptr Api::sendVideoNote(int64_t chatId, const boost::variant<InputFile::
     return _tgTypeParser.parseJsonAndGetMessage(sendRequest("sendVideoNote", args));
 }
 
-vector<Message::Ptr> Api::sendMediaGroup(int64_t chatId, const vector<InputMedia::Ptr>& media, bool disableNotification, int32_t replyToMessageId) const {
+vector<Message::Ptr> Api::sendMediaGroup(int64_t chatId, const vector<InputMedia::Ptr>& media, const vector<InputFile::Ptr>& files, bool disableNotification, int32_t replyToMessageId) const {
     vector<HttpReqArg> args;
     args.reserve(4);
     args.emplace_back("chat_id", chatId);
@@ -487,6 +487,10 @@ vector<Message::Ptr> Api::sendMediaGroup(int64_t chatId, const vector<InputMedia
     args.emplace_back("media", mediaJson);
     args.emplace_back("disable_notification", disableNotification);
     args.emplace_back("reply_to_message_id", replyToMessageId);
+    for (InputFile::Ptr file: files) {
+        args.reserve(args.size() + 1);
+        args.emplace_back(file->fileName, file->data, true, file->mimeType, file->fileName);
+    }
     return _tgTypeParser.parseJsonAndGetArray<Message>(&TgTypeParser::parseJsonAndGetMessage, sendRequest("sendMediaGroup", args));
 }
 

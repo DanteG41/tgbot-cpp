@@ -315,7 +315,7 @@ public:
      * @param replyToMessageId Optional. If the messages are a reply, ID of the original message.
      * @return On success, an array of the sent Messages is returned.
      */
-    std::vector<Message::Ptr> sendMediaGroup(int64_t chatId, const std::vector<InputMedia::Ptr>& media,
+    std::vector<Message::Ptr> sendMediaGroup(int64_t chatId, const std::vector<InputMedia::Ptr>& media, const std::vector<InputFile::Ptr>& files = std::vector<InputFile::Ptr>(),
                                              bool disableNotification = false, int32_t replyToMessageId = 0) const;
 
     /**
