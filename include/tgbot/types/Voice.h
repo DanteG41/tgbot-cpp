@@ -1,6 +1,7 @@
 #ifndef TGBOT_VOICE_H
 #define TGBOT_VOICE_H
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -16,24 +17,33 @@ public:
     typedef std::shared_ptr<Voice> Ptr;
 
     /**
-     * @brief Unique identifier for this file.
+     * @brief Identifier for this file, which can be used to download or reuse the file
      */
     std::string fileId;
 
     /**
-     * @brief Duration of the audio in seconds as defined by sender.
+     * @brief Unique identifier for this file, which is supposed to be the same over time and for different bots.
+     * Can't be used to download or reuse the file.
      */
-    int32_t duration;
+    std::string fileUniqueId;
 
     /**
-     * @brief Optional. MIME type of the file as defined by sender;
+     * @brief Duration of the audio in seconds as defined by sender
+     */
+    std::int32_t duration;
+
+    /**
+     * @brief Optional. MIME type of the file as defined by sender
      */
     std::string mimeType;
 
     /**
-     * @brief Optional. File size.
+     * @brief Optional. File size in bytes.
+     * 
+     * It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it.
+     * But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
      */
-    int32_t fileSize;
+    std::int64_t fileSize;
 };
 }
 

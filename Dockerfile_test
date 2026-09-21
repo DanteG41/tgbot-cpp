@@ -1,5 +1,5 @@
-FROM ubuntu:18.04
-MAINTAINER Oleg Morozenkov <a@reo7sp.ru>
+FROM ubuntu:jammy
+MAINTAINER Oleg Morozenkov <m@oleg.rocks>
 
 RUN apt-get -qq update && \
     apt-get -qq install -y \
@@ -14,10 +14,10 @@ RUN apt-get -qq update && \
         libicu-dev \
         libssl-dev \
         make \
-        python-dev \
+        python2.7-dev \
         wget \
-        zlib1g-dev
-
+        zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/tgbot-cpp
 COPY include include
@@ -29,7 +29,6 @@ RUN cmake -DENABLE_TESTS=ON . && \
     make -j$(nproc) && \
     make install
 
-
 COPY samples samples
 
 WORKDIR /usr/src/tgbot-cpp/samples/echobot
@@ -37,6 +36,19 @@ RUN rm -rf CMakeCache.txt CMakeFiles/ && \
     cmake . && make -j$(nproc)
 
 WORKDIR /usr/src/tgbot-cpp/samples/echobot-curl-client
+RUN rm -rf CMakeCache.txt CMakeFiles/ && \
+    cmake . && make -j$(nproc)
+
+WORKDIR /usr/src/tgbot-cpp/samples/echobot-setmycommands
+RUN rm -rf CMakeCache.txt CMakeFiles/ && \
+    cmake . && make -j$(nproc)
+
+WORKDIR /usr/src/tgbot-cpp
+RUN rm -rf samples/echobot-submodule/tgbot-cpp/
+COPY include samples/echobot-submodule/tgbot-cpp/include
+COPY src samples/echobot-submodule/tgbot-cpp/src
+COPY CMakeLists.txt samples/echobot-submodule/tgbot-cpp/
+WORKDIR /usr/src/tgbot-cpp/samples/echobot-submodule
 RUN rm -rf CMakeCache.txt CMakeFiles/ && \
     cmake . && make -j$(nproc)
 
@@ -52,8 +64,18 @@ WORKDIR /usr/src/tgbot-cpp/samples/photo
 RUN rm -rf CMakeCache.txt CMakeFiles/ && \
     cmake . && make -j$(nproc)
 
+WORKDIR /usr/src/tgbot-cpp/samples/received-text-processing
+RUN rm -rf CMakeCache.txt CMakeFiles/ && \
+    cmake . && make -j$(nproc)
+
+WORKDIR /usr/src/tgbot-cpp/samples/reply-keyboard
+RUN rm -rf CMakeCache.txt CMakeFiles/ && \
+    cmake . && make -j$(nproc)
+
+WORKDIR /usr/src/tgbot-cpp/samples/receive-file
+RUN rm -rf CMakeCache.txt CMakeFiles/ && \
+    cmake . && make -j$(nproc)
 
 WORKDIR /usr/src/tgbot-cpp
 ENV CTEST_OUTPUT_ON_FAILURE=1
 CMD make test
-

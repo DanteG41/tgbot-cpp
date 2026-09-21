@@ -2,6 +2,9 @@
 
 #include <boost/asio/ssl.hpp>
 
+#include <cstddef>
+#include <vector>
+
 using namespace std;
 using namespace boost::asio;
 using namespace boost::asio::ip;
@@ -16,14 +19,17 @@ BoostHttpOnlySslClient::~BoostHttpOnlySslClient() {
 
 string BoostHttpOnlySslClient::makeRequest(const Url& url, const vector<HttpReqArg>& args) const {
     tcp::resolver resolver(_ioService);
-    tcp::resolver::query query(url.host, "443");
 
     ssl::context context(ssl::context::tlsv12_client);
     context.set_default_verify_paths();
 
     ssl::stream<tcp::socket> socket(_ioService, context);
-
+#if BOOST_VERSION >= 108700
+    connect(socket.lowest_layer(), resolver.resolve(url.host, "443"));
+#else
+    tcp::resolver::query query(url.host, "443");
     connect(socket.lowest_layer(), resolver.resolve(query));
+#endif
 
     #ifdef TGBOT_DISABLE_NAGLES_ALGORITHM
     socket.lowest_layer().set_option(tcp::no_delay(true));
@@ -38,13 +44,47 @@ string BoostHttpOnlySslClient::makeRequest(const Url& url, const vector<HttpReqA
     #endif //Processor architecture
     #endif //TGBOT_CHANGE_SOCKET_BUFFER_SIZE
     socket.set_verify_mode(ssl::verify_none);
+#if BOOST_VERSION >= 108700
+    socket.set_verify_callback(ssl::host_name_verification(url.host));
+#else
     socket.set_verify_callback(ssl::rfc2818_verification(url.host));
+#endif
 
     socket.handshake(ssl::stream<tcp::socket>::client);
 
     string requestText = _httpParser.generateRequest(url, args, false);
     write(socket, buffer(requestText.c_str(), requestText.length()));
 
+    fd_set fileDescriptorSet;
+    struct timeval timeStruct;
+    
+    // set the timeout to 20 seconds
+    timeStruct.tv_sec = _timeout;
+    timeStruct.tv_usec = 0;
+    FD_ZERO(&fileDescriptorSet);
+    
+    // We'll need to get the underlying native socket for this select call, in order
+    // to add a simple timeout on the read:
+    
+    int nativeSocket = static_cast<int>(socket.lowest_layer().native_handle());
+    
+    FD_SET(nativeSocket,&fileDescriptorSet);        
+    select(nativeSocket+1,&fileDescriptorSet,NULL,NULL,&timeStruct);
+    
+    if(!FD_ISSET(nativeSocket,&fileDescriptorSet)){ // timeout
+        
+        std::string sMsg("TIMEOUT on read client data. Client IP: ");
+        
+        sMsg.append(socket.next_layer().remote_endpoint().address().to_string());
+    #if BOOST_VERSION >= 108700
+        _ioService.restart();
+    #else
+        _ioService.reset();
+    #endif
+        
+        throw std::exception();
+    }      
+    
     string response;
 
     #ifdef TGBOT_CHANGE_READ_BUFFER_SIZE
@@ -59,7 +99,7 @@ string BoostHttpOnlySslClient::makeRequest(const Url& url, const vector<HttpReqA
 
     boost::system::error_code error;
     while (!error) {
-        size_t bytes = read(socket, buffer(buff), error);
+        std::size_t bytes = read(socket, buffer(buff), error);
         response += string(buff, bytes);
     }
 

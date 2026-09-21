@@ -3,14 +3,18 @@
 
 #ifdef HAVE_CURL
 
-#include <string>
-
-#include <curl/curl.h>
-
 #include "tgbot/net/HttpClient.h"
 #include "tgbot/net/Url.h"
 #include "tgbot/net/HttpReqArg.h"
 #include "tgbot/net/HttpParser.h"
+
+#include <curl/curl.h>
+
+#include <mutex>
+#include <string>
+#include <vector>
+#include <thread>
+#include <unordered_map>
 
 namespace TgBot {
 
@@ -19,7 +23,7 @@ namespace TgBot {
  *
  * @ingroup net
  */
-class CurlHttpClient : public HttpClient {
+class TGBOT_API CurlHttpClient : public HttpClient {
 
 public:
     CurlHttpClient();
@@ -34,12 +38,28 @@ public:
     std::string makeRequest(const Url& url, const std::vector<HttpReqArg>& args) const override;
 
     /**
-     * @brief Raw curl settings storage for fine tuning.
+     * @brief Raw curl handles, each thread has its own handle.
      */
-    CURL* curlSettings;
+    std::unordered_map<std::thread::id, CURL*> curlHandles;
+
+    /**
+     * @brief Lock for curlHandles access.
+     */
+    std::mutex curlHandlesMutex;
+
+    /**
+     * @brief Proxy URL (NULL = no proxy).
+     */
+    void setProxy(const char* url = NULL, long timeout = 20L) {
+	_proxyUrl = url;
+	_connectTimeout = timeout;
+    }
 
 private:
     const HttpParser _httpParser;
+    const char* _proxyUrl = NULL;
+    long _connectTimeout = 20L;
+
 };
 
 }

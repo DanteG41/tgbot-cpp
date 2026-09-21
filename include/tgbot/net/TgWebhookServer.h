@@ -1,12 +1,14 @@
 #ifndef TGBOT_TGHTTPSERVER_H
 #define TGBOT_TGHTTPSERVER_H
 
-#include <utility>
-
 #include "tgbot/Bot.h"
 #include "tgbot/EventHandler.h"
 #include "tgbot/TgTypeParser.h"
 #include "tgbot/net/HttpServer.h"
+
+#include <string>
+#include <unordered_map>
+#include <utility>
 
 namespace TgBot {
 
@@ -36,8 +38,8 @@ private:
         return HttpServer<Protocol>::_httpParser.generateResponse("", "text/plain", 200, "OK", false);
     }
 
-    const EventHandler& _eventHandler;
     const std::string _path;
+    const EventHandler& _eventHandler;
     const TgTypeParser _tgTypeParser;
 };
 

@@ -1,8 +1,9 @@
 #include "tgbot/tools/StringTools.h"
 
-#include <cstdlib>
 #include <iomanip>
 #include <cstdio>
+#include <random>
+#include <string>
 
 using namespace std;
 
@@ -54,12 +55,18 @@ void split(const string& str, char delimiter, vector<string>& dest) {
     }
 }
 
-string generateRandomString(size_t length) {
-    static const string chars("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-=[]\\;',./!@#$%^&*()_+{}|:\"<>?`~");
-    static const size_t charsLen = chars.length();
+string generateRandomString(std::size_t length) {
+    static const string chars("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-=[]\\',./!@#$%^&*()_+{}|:\"<>?`~");
+       
+    static const std::size_t charsLen = chars.length();
     string result;
-    for (size_t i = 0; i < length; ++i) {
-        result += chars[rand() % charsLen];
+
+    random_device randomDevice;
+    mt19937 randomSeed(randomDevice());
+    uniform_int_distribution<std::size_t> generator(0, charsLen - 1);
+
+    for (std::size_t i = 0; i < length; ++i) {
+        result += chars[generator(randomSeed)];
     }
     return result;
 }
@@ -81,17 +88,34 @@ string urlEncode(const string& value, const std::string& additionalLegitChars) {
 
 string urlDecode(const string& value) {
     string result;
-    for (size_t i = 0, count = value.length(); i < count; ++i) {
+    for (std::size_t i = 0, count = value.length(); i < count; ++i) {
         const char c = value[i];
         if (c == '%') {
-            int t = 0;
-            sscanf(value.substr(i + 1, 2).c_str(), "%x", &t);
+            int t = stoi(value.substr(i + 1, 2), nullptr, 16);
             result += (char) t;
             i += 2;
         } else {
             result += c;
         }
     }
+    return result;
+}
+
+std::string escapeJsonString(const std::string& value) {
+    string result;
+
+    for (const char& c : value) {
+        switch (c) {
+        case '"':
+        case '\\':
+        case '/':
+            result += '\\';
+            break;
+        }
+
+        result += c;
+    }
+
     return result;
 }
 

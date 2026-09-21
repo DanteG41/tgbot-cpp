@@ -1,9 +1,10 @@
 #ifndef TGBOT_CPP_INPUTFILE_H
 #define TGBOT_CPP_INPUTFILE_H
 
-#include <string>
+#include "tgbot/export.h"
+
 #include <memory>
-#include <utility>
+#include <string>
 
 namespace TgBot {
 
@@ -12,7 +13,7 @@ namespace TgBot {
  *
  * @ingroup types
  */
-class InputFile {
+class TGBOT_API InputFile {
 
 public:
     typedef std::shared_ptr<InputFile> Ptr;

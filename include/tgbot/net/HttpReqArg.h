@@ -1,12 +1,13 @@
 #ifndef TGBOT_HTTPPARAMETER_H
 #define TGBOT_HTTPPARAMETER_H
 
-#include <string>
-#include <utility>
-#include <vector>
-#include <functional>
+#include "tgbot/export.h"
 
 #include <boost/lexical_cast.hpp>
+
+#include <string>
+#include <vector>
+#include <functional>
 
 namespace TgBot {
 
@@ -15,7 +16,7 @@ namespace TgBot {
  *
  * @ingroup net
  */
-class HttpReqArg {
+class TGBOT_API HttpReqArg {
 
 public:
     template<typename T>

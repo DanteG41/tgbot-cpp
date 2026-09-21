@@ -1,17 +1,16 @@
 #ifndef TGBOT_ANIMATION_H
 #define TGBOT_ANIMATION_H
 
+#include "tgbot/types/PhotoSize.h"
+
+#include <cstdint>
 #include <memory>
 #include <string>
-
-#include "tgbot/types/PhotoSize.h"
 
 namespace TgBot {
 
 /**
- * @brief You can provide an animation for your game so that it looks stylish in chats (check out Lumberjack for an example).
- *
- * This object represents an animation file to be displayed in the message containing a game.
+ * @brief This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).
  *
  * @ingroup types
  */
@@ -20,29 +19,53 @@ public:
     typedef std::shared_ptr<Animation> Ptr;
 
     /**
-     * @brief Unique file identifier.
+     * @brief Identifier for this file, which can be used to download or reuse the file
      */
     std::string fileId;
 
     /**
-     * @brief Optional. Animation thumbnail as defined by sender.
+     * @brief Unique identifier for this file, which is supposed to be the same over time and for different bots.
+     * Can't be used to download or reuse the file.
      */
-    PhotoSize::Ptr thumb;
+    std::string fileUniqueId;
 
     /**
-     * @brief Optional. Original animation filename as defined by sender.
+     * @brief Video width as defined by sender
+     */
+    std::int32_t width;
+
+    /**
+     * @brief Video height as defined by sender
+     */
+    std::int32_t height;
+
+    /**
+     * @brief Duration of the video in seconds as defined by sender
+     */
+    std::int32_t duration;
+
+    /**
+     * @brief Optional. Animation thumbnail as defined by sender
+     */
+    PhotoSize::Ptr thumbnail;
+
+    /**
+     * @brief Optional. Original animation filename as defined by sender
      */
     std::string fileName;
 
     /**
-     * @brief Optional. MIME type of the file as defined by sender.
+     * @brief Optional. MIME type of the file as defined by sender
      */
     std::string mimeType;
 
     /**
-     * @brief Optional. File size.
+     * @brief Optional. File size in bytes.
+     * 
+     * It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it.
+     * But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
      */
-    int32_t fileSize;
+    std::int64_t fileSize;
 };
 }
 

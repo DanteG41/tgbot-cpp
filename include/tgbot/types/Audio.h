@@ -1,15 +1,16 @@
-#ifndef TGBOT_CPP_AUDIO_H
-#define TGBOT_CPP_AUDIO_H
-
-#include <string>
-#include <memory>
+#ifndef TGBOT_AUDIO_H
+#define TGBOT_AUDIO_H
 
 #include "tgbot/types/PhotoSize.h"
+
+#include <cstdint>
+#include <memory>
+#include <string>
 
 namespace TgBot {
 
 /**
- * @brief This object represents an audio file (voice note).
+ * @brief This object represents an audio file to be treated as music by the Telegram clients.
  *
  * @ingroup types
  */
@@ -19,43 +20,54 @@ public:
     typedef std::shared_ptr<Audio> Ptr;
 
     /**
-     * @brief Unique identifier for this file.
+     * @brief Identifier for this file, which can be used to download or reuse the file
      */
     std::string fileId;
 
     /**
-     * @brief Duration of the audio in seconds as defined by sender.
+     * @brief Unique identifier for this file, which is supposed to be the same over time and for different bots.
+     * Can't be used to download or reuse the file.
      */
-    int32_t duration;
+    std::string fileUniqueId;
 
     /**
-     * @brief Optional. Performer of the audio as defined by sender
-     * or by audio tags
+     * @brief Duration of the audio in seconds as defined by sender
+     */
+    std::int32_t duration;
+
+    /**
+     * @brief Optional. Performer of the audio as defined by sender or by audio tags
      */
     std::string performer;
 
     /**
-    * @brief Optional. Title of the audio as defined by sender or
-    * by audio tags
+    * @brief Optional. Title of the audio as defined by sender or by audio tags
     */
     std::string title;
 
     /**
-     * @brief Optional. MIME type of the file as defined by sender.
+     * @brief Optional. Original filename as defined by sender
+     */
+    std::string fileName;
+
+    /**
+     * @brief Optional. MIME type of the file as defined by sender
      */
     std::string mimeType;
 
     /**
-     * @brief Optional. File size.
+     * @brief Optional. File size in bytes.
+     * 
+     * It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it.
+     * But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
      */
-    int32_t fileSize;
+    std::int64_t fileSize;
 
     /**
      * @brief Optional. Thumbnail of the album cover to which the music file belongs
      */
-    PhotoSize::Ptr thumb;
+    PhotoSize::Ptr thumbnail;
 };
-
 }
 
-#endif //TGBOT_CPP_AUDIO_H
+#endif //TGBOT_AUDIO_H

@@ -1,19 +1,28 @@
 #ifndef TGBOT_INLINEQUERYRESULTDOCUMENT_H
 #define TGBOT_INLINEQUERYRESULTDOCUMENT_H
 
-#include <string>
-#include <memory>
-
 #include "tgbot/types/InlineQueryResult.h"
+#include "tgbot/types/MessageEntity.h"
+#include "tgbot/types/InputMessageContent.h"
+
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace TgBot {
 
 /**
  * @brief Represents a link to a file.
  *
+ * By default, this file will be sent by the user with an optional caption.
+ * Alternatively, you can use inputMessageContent to send a message with the specified content instead of the file.
+ * Currently, only .PDF and .ZIP files can be sent using this method.
+ *
  * @ingroup types
  */
 class InlineQueryResultDocument : public InlineQueryResult {
+
 public:
     static const std::string TYPE;
 
@@ -21,9 +30,29 @@ public:
 
     InlineQueryResultDocument() {
         this->type = TYPE;
-        this->thumbHeight = 0;
-        this->thumbWidth = 0;
     }
+
+    /**
+     * @brief Title for the result
+     */
+    std::string title;
+
+    /**
+     * @brief Optional. Caption of the document to be sent, 0-1024 characters after entities parsing
+     */
+    std::string caption;
+
+    /**
+     * @brief Optional. Mode for parsing entities in the document caption.
+     *
+     * See [formatting options](https://core.telegram.org/bots/api#formatting-options) for more details.
+     */
+    std::string parseMode;
+
+    /**
+     * @brief Optional. List of special entities that appear in the caption, which can be specified instead of parseMode
+     */
+    std::vector<MessageEntity::Ptr> captionEntities;
 
     /**
      * @brief A valid URL for the file
@@ -31,7 +60,7 @@ public:
     std::string documentUrl;
 
     /**
-     * @brief Mime type of the content of the file, either 'application/pdf' or 'application/zip'
+     * @brief MIME type of the content of the file, either “application/pdf” or “application/zip”
      */
     std::string mimeType;
 
@@ -41,19 +70,24 @@ public:
     std::string description;
 
     /**
-    * @brief Optional. Url of the thumbnail for the result
-    */
-    std::string thumbUrl;
+     * @brief Optional. Content of the message to be sent instead of the file
+     */
+    InputMessageContent::Ptr inputMessageContent;
 
     /**
-    * @brief Optional. Thumbnail width.
-    */
-    int32_t thumbWidth;
+     * @brief Optional. URL of the thumbnail (JPEG only) for the file
+     */
+    std::string thumbnailUrl;
 
     /**
-    * @brief Optinal. Thumbnail height
-    */
-    int32_t thumbHeight;
+     * @brief Optional. Thumbnail width
+     */
+    std::int32_t thumbnailWidth;
+
+    /**
+     * @brief Optional. Thumbnail height
+     */
+    std::int32_t thumbnailHeight;
 };
 }
 

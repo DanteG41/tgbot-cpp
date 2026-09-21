@@ -1,11 +1,12 @@
 #ifndef TGBOT_GAMEHIGHSCORE_H
 #define TGBOT_GAMEHIGHSCORE_H
 
-#include <memory>
-#include <string>
-
 #include "tgbot/types/PhotoSize.h"
 #include "tgbot/types/User.h"
+
+#include <cstdint>
+#include <memory>
+#include <string>
 
 namespace TgBot {
 
@@ -31,7 +32,7 @@ public:
     /**
      * @brief Score.
      */
-    int32_t score;
+    std::int32_t score;
 };
 }
 

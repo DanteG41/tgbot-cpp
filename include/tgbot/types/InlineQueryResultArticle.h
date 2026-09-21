@@ -1,10 +1,12 @@
 #ifndef TGBOT_INLINEQUERYRESULTARTICLE_H
 #define TGBOT_INLINEQUERYRESULTARTICLE_H
 
+#include "tgbot/types/InlineQueryResult.h"
+#include "tgbot/types/InputMessageContent.h"
+
+#include <cstdint>
 #include <string>
 #include <memory>
-
-#include "tgbot/types/InlineQueryResult.h"
 
 namespace TgBot {
 
@@ -21,13 +23,20 @@ public:
 
     InlineQueryResultArticle() {
         this->type = TYPE;
-        this->hideUrl = false;
-        this->thumbHeight = 0;
-        this->thumbWidth = 0;
     }
 
     /**
-     * @brief Optional. URL of the result.
+     * @brief Title of the result
+     */
+    std::string title;
+
+    /**
+     * @brief Content of the message to be sent
+     */
+    InputMessageContent::Ptr inputMessageContent;
+
+    /**
+     * @brief Optional. URL of the result
      */
     std::string url;
 
@@ -37,24 +46,24 @@ public:
     bool hideUrl;
 
     /**
-     * @brief Optional. Short description of the result.
+     * @brief Optional. Short description of the result
      */
     std::string description;
 
     /**
      * @brief Optional. Url of the thumbnail for the result
      */
-    std::string thumbUrl;
+    std::string thumbnailUrl;
 
     /**
-     * @brief Optional. Thumbnail width.
+     * @brief Optional. Thumbnail width
      */
-    int32_t thumbWidth;
+    std::int32_t thumbnailWidth;
 
     /**
-     * @brief Optinal. Thumbnail height
+     * @brief Optional. Thumbnail height
      */
-    int32_t thumbHeight;
+    std::int32_t thumbnailHeight;
 };
 }
 

@@ -1,11 +1,12 @@
 #ifndef TGBOT_STICKERSET_H
 #define TGBOT_STICKERSET_H
 
+#include "tgbot/types/Sticker.h"
+#include "tgbot/types/PhotoSize.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "tgbot/types/Sticker.h"
 
 namespace TgBot {
 
@@ -15,33 +16,41 @@ namespace TgBot {
  * @ingroup types
  */
 class StickerSet {
+
 public:
     typedef std::shared_ptr<StickerSet> Ptr;
 
     /**
-     * @brief Sticker set name.
+     * @brief Enum of possible types of a sticker.
+     */
+    enum class Type {
+        Regular, Mask, CustomEmoji
+    };
+
+    /**
+     * @brief Sticker set name
      */
     std::string name;
 
     /**
-     * @brief Sticker set title.
+     * @brief Sticker set title
      */
     std::string title;
 
     /**
- * @brief True, if the sticker set contains animated stickers.
-    */
-    bool isAnimated = false;
-
-    /**
-     * @brief True, if the sticker set contains masks.
+     * @brief Type of stickers in the set, currently one of Type::Regular, Type::Mask, Type::CustomEmoji”
      */
-    bool containsMasks = false;
+    Type stickerType;
 
     /**
-     * @brief List of all set stickers.
+     * @brief List of all set stickers
      */
     std::vector<Sticker::Ptr> stickers;
+
+    /**
+     * @brief Optional. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format
+     */
+    PhotoSize::Ptr thumbnail;
 };
 }
 

@@ -1,8 +1,8 @@
 FROM reo7sp/tgbot-cpp
-MAINTAINER Oleg Morozenkov <a@reo7sp.ru>
+MAINTAINER Oleg Morozenkov <m@oleg.rocks>
 
 WORKDIR /usr/src/inline-keyboard
 COPY . .
 RUN cmake .
-RUN make
+RUN make -j4
 CMD ./inline-keyboard

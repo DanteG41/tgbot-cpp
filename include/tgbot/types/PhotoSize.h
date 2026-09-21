@@ -1,6 +1,7 @@
 #ifndef TGBOT_CPP_PHOTOSIZE_H
 #define TGBOT_CPP_PHOTOSIZE_H
 
+#include <cstdint>
 #include <string>
 #include <memory>
 
@@ -17,26 +18,31 @@ public:
     typedef std::shared_ptr<PhotoSize> Ptr;
 
     /**
-     * @brief Unique identifier for this file.
+     * @brief Identifier for this file, which can be used to download or reuse the file
      */
     std::string fileId;
 
     /**
-     * @brief Photo width.
+     * @brief Unique identifier for this file, which is supposed to be the same over time and for different bots.
+     * Can't be used to download or reuse the file.
      */
-    int32_t width;
+    std::string fileUniqueId;
 
     /**
-     * @brief Photo height.
+     * @brief Photo width
      */
-    int32_t height;
+    std::int32_t width;
 
     /**
-     * @brief Optional. File size.
+     * @brief Photo height
      */
-    int32_t fileSize;
+    std::int32_t height;
+
+    /**
+     * @brief Optional. File size
+     */
+    std::int32_t fileSize;
 };
-
 }
 
 #endif //TGBOT_CPP_PHOTOSIZE_H

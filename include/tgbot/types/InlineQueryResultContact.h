@@ -1,19 +1,25 @@
 #ifndef TGBOT_INLINEQUERYRESULTCONTACT_H
 #define TGBOT_INLINEQUERYRESULTCONTACT_H
 
-#include <string>
-#include <memory>
-
 #include "tgbot/types/InlineQueryResult.h"
+#include "tgbot/types/InputMessageContent.h"
+
+#include <cstdint>
+#include <memory>
+#include <string>
 
 namespace TgBot {
 
 /**
- * @brief Represents a contact with a phone number
+ * @brief Represents a contact with a phone number.
+ *
+ * By default, this contact will be sent by the user.
+ * Alternatively, you can use inputMessageContent to send a message with the specified content instead of the contact.
  *
  * @ingroup types
  */
 class InlineQueryResultContact : public InlineQueryResult {
+
 public:
     static const std::string TYPE;
 
@@ -21,8 +27,6 @@ public:
 
     InlineQueryResultContact() {
         this->type = TYPE;
-        this->thumbHeight = 0;
-        this->thumbWidth = 0;
     }
 
     /**
@@ -41,24 +45,29 @@ public:
     std::string lastName;
 
     /**
-     * @brief Optional. Additional data about the contact in the form of a vCard, 0-2048 bytes
+     * @brief Optional. Additional data about the contact in the form of a [vCard](https://en.wikipedia.org/wiki/VCard), 0-2048 bytes
      */
     std::string vcard;
 
     /**
-    * @brief Optional. Url of the thumbnail for the result
-    */
-    std::string thumbUrl;
+     * @brief Optional. Content of the message to be sent instead of the contact
+     */
+    InputMessageContent::Ptr inputMessageContent;
 
     /**
-    * @brief Optional. Thumbnail width.
-    */
-    int32_t thumbWidth;
+     * @brief Optional. Url of the thumbnail for the result
+     */
+    std::string thumbnailUrl;
 
     /**
-    * @brief Optinal. Thumbnail height
-    */
-    int32_t thumbHeight;
+     * @brief Optional. Thumbnail width
+     */
+    std::int32_t thumbnailWidth;
+
+    /**
+     * @brief Optional. Thumbnail height
+     */
+    std::int32_t thumbnailHeight;
 };
 }
 

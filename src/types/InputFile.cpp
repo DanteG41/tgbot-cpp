@@ -1,20 +1,18 @@
 #include "tgbot/types/InputFile.h"
-
-#include <fstream>
-
-#include "tgbot/tools/StringTools.h"
 #include "tgbot/tools/FileTools.h"
 
-using namespace std;
+#include <filesystem>
+#include <memory>
+#include <string>
 
 namespace TgBot {
 
-InputFile::Ptr InputFile::fromFile(const string& filePath, const string& mimeType) {
-    auto result(make_shared<InputFile>());
+InputFile::Ptr InputFile::fromFile(const std::string& filePath, const std::string& mimeType) {
+    auto result(std::make_shared<InputFile>());
     result->data = FileTools::read(filePath);
     result->mimeType = mimeType;
-    result->fileName = StringTools::split(filePath, '/').back();
+    result->fileName = std::filesystem::path(filePath).filename().string();
     return result;
 }
 
-};
+}

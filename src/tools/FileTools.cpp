@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -23,4 +24,4 @@ void write(const string& content, const string& filePath) {
     out.close();
 }
 
-};
+}

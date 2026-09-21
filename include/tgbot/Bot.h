@@ -1,27 +1,27 @@
 #ifndef TGBOT_CPP_BOT_H
 #define TGBOT_CPP_BOT_H
 
+#include "tgbot/Api.h"
+#include "tgbot/EventHandler.h"
+
+#include <memory>
 #include <string>
 #include <utility>
-#include "tgbot/Api.h"
-#include "tgbot/EventBroadcaster.h"
-#include "tgbot/EventHandler.h"
-#include "tgbot/net/HttpClient.h"
-#include "tgbot/net/BoostHttpOnlySslClient.h"
 
 namespace TgBot {
+
+class EventBroadcaster;
+class HttpClient;
 
 /**
  * @brief This object holds other objects specific for this bot instance.
  *
  * @ingroup general
  */
-class Bot {
+class TGBOT_API Bot {
 
 public:
-    explicit Bot(std::string token, const HttpClient& httpClient = _getDefaultHttpClient())
-        : _token(std::move(token)), _api(_token, httpClient), _eventHandler(_eventBroadcaster) {
-    }
+    explicit Bot(std::string token, const HttpClient &httpClient = _getDefaultHttpClient(), const std::string& url="https://api.telegram.org");
 
     /**
      * @return Token for accessing api.
@@ -41,7 +41,7 @@ public:
      * @return Object which holds all event listeners.
      */
     inline EventBroadcaster& getEvents() {
-        return _eventBroadcaster;
+        return *_eventBroadcaster;
     }
 
     /**
@@ -52,14 +52,11 @@ public:
     }
 
 private:
-    static HttpClient& _getDefaultHttpClient() {
-        static BoostHttpOnlySslClient instance;
-        return instance;
-    }
+    static HttpClient &_getDefaultHttpClient();
 
     const std::string _token;
     const Api _api;
-    EventBroadcaster _eventBroadcaster;
+    std::unique_ptr<EventBroadcaster> _eventBroadcaster;
     const EventHandler _eventHandler;
 };
 

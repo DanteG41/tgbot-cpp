@@ -1,9 +1,10 @@
 #ifndef TGBOT_WEBHOOKINFO_H
 #define TGBOT_WEBHOOKINFO_H
 
+#include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace TgBot {
 
@@ -17,7 +18,7 @@ public:
     typedef std::shared_ptr<WebhookInfo> Ptr;
 
     /**
-     * @brief Webhook URL, may be empty if webhook is not set up.
+     * @brief Webhook URL, may be empty if webhook is not set up
      */
     std::string url;
 
@@ -29,25 +30,35 @@ public:
     /**
      * @brief Number of updates awaiting delivery
      */
-    int32_t pendingUpdateCount;
+    std::int32_t pendingUpdateCount;
+
+    /**
+     * @brief Optional. Currently used webhook IP address
+     */
+    std::string ipAddress;
 
     /**
      * @brief Optional. Unix time for the most recent error that happened when trying to deliver an update via webhook
      */
-    int32_t lastErrorDate;
+    std::int32_t lastErrorDate;
 
     /**
-     * @brief Optional. Error message in human - readable format for the most recent error that happened when trying to deliver an update via webhook
+     * @brief Optional. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
      */
     std::string lastErrorMessage;
 
     /**
-     * @brief Optional. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
+     * @brief Optional. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters
      */
-    int32_t maxConnections;
+    std::int32_t lastSynchronizationErrorDate;
 
     /**
-     * @brief Optional. A list of update types the bot is subscribed to. Defaults to all update types
+     * @brief Optional. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
+     */
+    std::int32_t maxConnections;
+
+    /**
+     * @brief Optional. A list of update types the bot is subscribed to. Defaults to all update types except chatMember
      */
     std::vector<std::string> allowedUpdates;
 };

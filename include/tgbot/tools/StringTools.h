@@ -1,6 +1,9 @@
 #ifndef TGBOT_CPP_STRINGTOOLS_H
 #define TGBOT_CPP_STRINGTOOLS_H
 
+#include "tgbot/export.h"
+
+#include <cstddef>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -15,6 +18,7 @@ namespace StringTools {
  * @param str1 First string
  * @param str2 Second string
  */
+TGBOT_API
 bool startsWith(const std::string& str1, const std::string& str2);
 
 /**
@@ -22,6 +26,7 @@ bool startsWith(const std::string& str1, const std::string& str2);
  * @param str1 First string
  * @param str2 Second string
  */
+TGBOT_API
 bool endsWith(const std::string& str1, const std::string& str2);
 
 /**
@@ -30,13 +35,15 @@ bool endsWith(const std::string& str1, const std::string& str2);
  * @param delimiter Delimiter
  * @param dest Array to which substrings will be saved.
  */
+TGBOT_API
 void split(const std::string& str, char delimiter, std::vector<std::string>& dest);
 
 /**
  * Generates pseudo random string. It's recommended to call srand before this method.
  * @param length Length of resulting string.
  */
-std::string generateRandomString(size_t length);
+TGBOT_API
+std::string generateRandomString(std::size_t length);
 
 /**
  * Performs url encode.
@@ -44,6 +51,7 @@ std::string generateRandomString(size_t length);
  * @param additionalLegitChars Optional. String of chars which will be not encoded in source url string.
  * @return Encoded url string
  */
+TGBOT_API
 std::string urlEncode(const std::string& value, const std::string& additionalLegitChars = "");
 
 /**
@@ -51,7 +59,17 @@ std::string urlEncode(const std::string& value, const std::string& additionalLeg
  * @param value Encoded url string
  * @return Decoded url string
  */
+TGBOT_API
 std::string urlDecode(const std::string& value);
+
+/**
+ * Escapes a string with illegal characters ("\/) for json
+ * 
+ * @param value input string
+ * 
+ * @return An encoded string
+ */
+std::string escapeJsonString(const std::string& value);
 
 /**
  * Splits string to smaller substrings which have between them a delimiter. Resulting substrings won't have delimiter.

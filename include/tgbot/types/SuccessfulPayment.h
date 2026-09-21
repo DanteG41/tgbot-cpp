@@ -1,10 +1,12 @@
 #ifndef TGBOT_SUCCESSFULPAYMENT_H
 #define TGBOT_SUCCESSFULPAYMENT_H
 
+#include "tgbot/types/OrderInfo.h"
+
+#include <cstdint>
 #include <string>
 #include <memory>
 #include <vector>
-#include "tgbot/types/OrderInfo.h"
 
 namespace TgBot {
 
@@ -35,7 +37,7 @@ public:
      *
      * https://core.telegram.org/bots/payments/currencies.json
      */
-    int32_t totalAmount;
+    std::int32_t totalAmount;
 
     /**
      * @brief Bot specified invoice payload.

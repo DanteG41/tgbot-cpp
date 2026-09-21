@@ -1,10 +1,11 @@
 #ifndef TGBOT_CPP_USERPROFILEPHOTOS_H
 #define TGBOT_CPP_USERPROFILEPHOTOS_H
 
+#include "tgbot/types/PhotoSize.h"
+
+#include <cstdint>
 #include <vector>
 #include <memory>
-
-#include "tgbot/types/PhotoSize.h"
 
 namespace TgBot {
 
@@ -21,7 +22,7 @@ public:
     /**
      * @brief Total number of profile pictures the target user has.
      */
-    int32_t totalCount;
+    std::int32_t totalCount;
 
     /**
      * @brief Requested profile pictures (in up to 4 sizes each).

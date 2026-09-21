@@ -1,14 +1,15 @@
 #ifndef TGBOT_BOOSTHTTPCLIENT_H
 #define TGBOT_BOOSTHTTPCLIENT_H
 
-#include <string>
-
-#include <boost/asio.hpp>
-
 #include "tgbot/net/HttpClient.h"
 #include "tgbot/net/Url.h"
 #include "tgbot/net/HttpReqArg.h"
 #include "tgbot/net/HttpParser.h"
+
+#include <boost/asio.hpp>
+
+#include <string>
+#include <vector>
 
 namespace TgBot {
 
@@ -17,7 +18,7 @@ namespace TgBot {
  *
  * @ingroup net
  */
-class BoostHttpOnlySslClient : public HttpClient {
+class TGBOT_API BoostHttpOnlySslClient : public HttpClient {
 
 public:
     BoostHttpOnlySslClient();
@@ -32,7 +33,11 @@ public:
     std::string makeRequest(const Url& url, const std::vector<HttpReqArg>& args) const override;
 
 private:
+#if BOOST_VERSION >= 108700
+    mutable boost::asio::io_context _ioService;
+#else
     mutable boost::asio::io_service _ioService;
+#endif
     const HttpParser _httpParser;
 };
 

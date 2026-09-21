@@ -1,6 +1,7 @@
 #include "tgbot/net/Url.h"
 
-#include "tgbot/tools/StringTools.h"
+#include <cstddef>
+#include <string>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ Url::Url(const string& url) {
     bool isPathParsed = false;
     bool isQueryParsed = false;
 
-    for (size_t i = 0, count = url.length(); i < count; ++i) {
+    for (std::size_t i = 0, count = url.length(); i < count; ++i) {
         char c = url[i];
 
         if (!isProtocolParsed) {

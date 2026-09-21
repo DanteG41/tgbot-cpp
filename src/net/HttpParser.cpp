@@ -1,8 +1,13 @@
 #include "tgbot/net/HttpParser.h"
 
+#include "tgbot/tools/StringTools.h"
+
 #include <boost/algorithm/string.hpp>
 
-#include "tgbot/tools/StringTools.h"
+#include <cstddef>
+#include <string>
+#include <vector>
+#include <unordered_map>
 
 using namespace std;
 using namespace boost;
@@ -52,11 +57,11 @@ string HttpParser::generateRequest(const Url& url, const vector<HttpReqArg>& arg
     return result;
 }
 
-string HttpParser::generateMultipartFormData(const vector<HttpReqArg>& args, const string& bondary) const {
+string HttpParser::generateMultipartFormData(const vector<HttpReqArg>& args, const string& boundary) const {
     string result;
     for (const HttpReqArg& item : args) {
         result += "--";
-        result += bondary;
+        result += boundary;
         result += "\r\nContent-Disposition: form-data; name=\"";
         result += item.name;
         if (item.isFile) {
@@ -72,13 +77,12 @@ string HttpParser::generateMultipartFormData(const vector<HttpReqArg>& args, con
         result += item.value;
         result += "\r\n";
     }
-    result += "--" + bondary + "--\r\n";
+    result += "--" + boundary + "--\r\n";
     return result;
 }
 
 string HttpParser::generateMultipartBoundary(const vector<HttpReqArg>& args) const {
     string result;
-    srand((uint32_t) time(nullptr));
     for (const HttpReqArg& item : args) {
         if (item.isFile) {
             while (result.empty() || item.value.find(result) != string::npos) {
@@ -131,10 +135,10 @@ string HttpParser::generateResponse(const string& data, const string& mimeType, 
 unordered_map<string, string> HttpParser::parseHeader(const string& data, bool isRequest) const {
     unordered_map<string, string> headers;
 
-    size_t lineStart = 0;
-    size_t lineEnd = 0;
-    size_t lineSepPos = 0;
-    size_t lastLineEnd = string::npos;
+    std::size_t lineStart = 0;
+    std::size_t lineEnd = 0;
+    std::size_t lineSepPos = 0;
+    std::size_t lastLineEnd = string::npos;
     while (lastLineEnd != lineEnd) {
         lastLineEnd = lineEnd;
         bool isFirstLine = lineEnd == 0;
@@ -165,7 +169,7 @@ unordered_map<string, string> HttpParser::parseHeader(const string& data, bool i
 }
 
 string HttpParser::extractBody(const string& data) const {
-    size_t headerEnd = data.find("\r\n\r\n");
+    std::size_t headerEnd = data.find("\r\n\r\n");
     if (headerEnd == string::npos) {
         return data;
     }

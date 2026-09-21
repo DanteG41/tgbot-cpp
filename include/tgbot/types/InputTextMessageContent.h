@@ -1,23 +1,31 @@
 #ifndef TGBOT_INPUTTEXTMESSAGECONTENT_H
 #define TGBOT_INPUTTEXTMESSAGECONTENT_H
 
+#include "tgbot/types/InputMessageContent.h"
+#include "tgbot/types/MessageEntity.h"
+#include "tgbot/types/LinkPreviewOptions.h"
+
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace TgBot {
 
 /**
- * @brief Represents the content of a text message to be sent as the result of an inline query.
+ * @brief Represents the [content](https://core.telegram.org/bots/api#inputmessagecontent) of a text message to be sent as the result of an inline query.
  *
  * @ingroup types
  */
 class InputTextMessageContent : public InputMessageContent {
+
 public:
+    static const std::string TYPE;
+
     typedef std::shared_ptr<InputTextMessageContent> Ptr;
 
-    InputTextMessageContent():
-        InputMessageContent("InputTextMessageContent")
-    {}
+    InputTextMessageContent() {
+        this->type = TYPE;
+    }
 
     /**
      * @brief Text of the message to be sent, 1-4096 characters
@@ -25,16 +33,21 @@ public:
     std::string messageText;
 
     /**
-     * @brief Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+     * @brief Optional. Mode for parsing entities in the message text.
+     *
+     * See [formatting options](https://core.telegram.org/bots/api#formatting-options) for more details.
      */
     std::string parseMode;
 
     /**
-     * @brief Optional. Disables link previews for links in the sent message
+     * @brief Optional. List of special entities that appear in message text, which can be specified instead of parseMode
      */
-    bool disableWebPagePreview;
+    std::vector<MessageEntity::Ptr> entities;
 
-    virtual ~InputTextMessageContent() { }
+    /**
+     * @brief Optional. Link preview generation options for the message
+     */
+    LinkPreviewOptions::Ptr linkPreviewOptions;
 };
 }
 

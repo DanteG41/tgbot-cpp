@@ -1,13 +1,18 @@
 #ifndef TGBOT_HTTPSERVER_H
 #define TGBOT_HTTPSERVER_H
 
-#include <iostream>
-#include <string>
-#include <utility>
+#include "tgbot/net/HttpParser.h"
 
 #include <boost/asio.hpp>
 
-#include "tgbot/net/HttpParser.h"
+#include <cstddef>
+#include <exception>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <utility>
 
 namespace TgBot {
 
@@ -73,7 +78,7 @@ protected:
                     _socket,
                     *data,
                     "\r\n\r\n",
-                    [self, data](const boost::system::error_code& e, size_t n) {
+                    [self, data](const boost::system::error_code& e, std::size_t n) {
                 if (e) {
                     std::cout << "error in HttpServer::Connection#_readHeader: " << e << std::endl;
                     return;
@@ -97,7 +102,7 @@ protected:
                     boost::asio::async_write(
                             self->_socket,
                             boost::asio::buffer(answer),
-                            [](const boost::system::error_code& e, size_t n) { });
+                            [](const boost::system::error_code&, std::size_t) { });
                     return;
                 }
 
@@ -114,7 +119,7 @@ protected:
             boost::asio::async_read(_socket,
                                     *data,
                                     boost::asio::transfer_exactly(size - data->size()),
-                                    [self, data, size, headers](const boost::system::error_code& e, size_t n) {
+                                    [self, data, size, headers](const boost::system::error_code& e, std::size_t) {
                 if (e) {
                     std::cout << "error in HttpServer::Connection#_readBody: " << e << std::endl;
                     return;
@@ -133,7 +138,7 @@ protected:
                 boost::asio::async_write(
                         self->_socket,
                         boost::asio::buffer(answer),
-                        [](const boost::system::error_code& e, size_t n) { });
+                        [](const boost::system::error_code&, std::size_t) { });
 
                 self->_socket.close();
             });
@@ -154,8 +159,11 @@ protected:
             _startAccept();
         });
     }
-
+#if BOOST_VERSION >= 108700
+    boost::asio::io_context _ioService;
+#else
     boost::asio::io_service _ioService;
+#endif
     boost::asio::basic_socket_acceptor<Protocol> _acceptor;
     boost::asio::basic_stream_socket<Protocol> _socket;
     const ServerHandler _handler;
