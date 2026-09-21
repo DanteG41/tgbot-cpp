@@ -565,6 +565,7 @@ public:
      */
     std::vector<Message::Ptr> sendMediaGroup(boost::variant<std::int64_t, std::string> chatId,
                                              const std::vector<InputMedia::Ptr>& media,
+                                             const std::vector<InputFile::Ptr>& files = std::vector<InputFile::Ptr>(),
                                              bool disableNotification = false,
                                              ReplyParameters::Ptr replyParameters = nullptr,
                                              std::int32_t messageThreadId = 0,

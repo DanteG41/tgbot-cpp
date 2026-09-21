@@ -765,6 +765,7 @@ Message::Ptr Api::sendVideoNote(boost::variant<std::int64_t, std::string> chatId
 
 std::vector<Message::Ptr> Api::sendMediaGroup(boost::variant<std::int64_t, std::string> chatId,
                                               const std::vector<InputMedia::Ptr>& media,
+                                              const std::vector<InputFile::Ptr>& files,
                                               bool disableNotification,
                                               ReplyParameters::Ptr replyParameters,
                                               std::int32_t messageThreadId,
@@ -789,6 +790,10 @@ std::vector<Message::Ptr> Api::sendMediaGroup(boost::variant<std::int64_t, std::
     }
     if (replyParameters != nullptr) {
         args.emplace_back("reply_parameters", _tgTypeParser.parseReplyParameters(replyParameters));
+    }
+    // The media only names the attachments, the files themselves have to go into the body.
+    for (const InputFile::Ptr& file : files) {
+        args.emplace_back(file->fileName, file->data, true, file->mimeType, file->fileName);
     }
 
     return _tgTypeParser.parseJsonAndGetArray<Message>(&TgTypeParser::parseJsonAndGetMessage, sendRequest("sendMediaGroup", args));
